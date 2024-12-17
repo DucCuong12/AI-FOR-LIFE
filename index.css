@@ -1,0 +1,38 @@
+#topnav {
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background-color: #ffc0cb80;
+}
+#topnav > div, 
+#topnav > div:first-of-type > p,
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#topnav > div:first-of-type > p {
+    height: 50px; 
+    padding-right: 10px;
+    border-right: 3px solid white; 
+}
+#topnav button, .button {
+    height: 30px;
+    margin: 0 10px;
+    padding: 0 5px;
+}
+#map {
+    height: 490px;
+    border-radius: 10px;
+}
+.boxselect {
+    border-radius: 5px;
+    border: 1px solid #9a9aa7;
+    background-color: #e9e9ed;
+}
+select {
+    margin-left: 10px;
+}

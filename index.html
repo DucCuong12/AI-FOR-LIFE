@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <!-- import Leaflet for interacting with maps -->
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="" rel="stylesheet"/>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+    
+    <!-- import the required CSS file -->
+    <link rel="stylesheet" href="./src/map/map.css">
+    <link rel="stylesheet" href="index.css">
+
+    <!-- import the required script -->
+    <script src="./src/map/dummyTSP.js"></script>
+    <script src="./src/map/findPath.js"></script>
+    <script src="./src/map/interactive.js"></script>
+    <script src="./src/map/config.js"></script>
+    <script src="./src/map/data.js"></script>
+    
+    <!-- set the website's attributes -->
+    <title>Cống Vị, Hà Nội </title>
+    <link rel="icon" type="image/png" href="favicon.ico"/>
+  </head>
+
+  <body>
+    <nav id="topnav">
+      <div>
+        <p>Phường Cống Vị</p>
+        <button id="show-map" class="button">Map</button>
+      </div>
+      
+      <div>
+        <div class="boxselect button">Mandatory point:
+          <select id="mandatory-point" >
+            <option value="0" selected >0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+        <div class="boxselect button">Algorithm:
+          <select id="find-path" >
+            <option value="0">Floyd</option>
+            <option value="1">Dijkstra</option>
+            <option value="2">A*</option>
+          </select>
+          <select id="dummy-TSP" >
+            <option value="0">Complete</option>
+            <option value="1">BnB</option>
+            <option value="2">GA</option>
+          </select>
+        </div>
+        <button id="run" class="button"> Run </button>
+      </div>
+    </nav>
+    <div id="map"></div>
+    <div id="console"></div>
+  </body>
+
+  <script src="index.js"></script> 
+</html>
