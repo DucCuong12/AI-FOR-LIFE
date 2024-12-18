@@ -108,21 +108,23 @@ if response.status_code == 200:
     adjacency_list = defaultdict(list)
 
     for way in ways:
-        # Kiểm tra nếu đường có danh sách node
         if "nodes" in way:
             is_oneway = way.get("tags", {}).get("oneway", "no") == "yes"
-            for i in range(len(way["nodes"]) - 1):
-                from_node = way["nodes"][i]
-                to_node = way["nodes"][i + 1]
-                if from_node in node_index and to_node in node_index:
-                    if is_oneway:
-                        # Thêm vào danh sách đường 1 chiều
-                        list1Ways.append([node_index[from_node], node_index[to_node]])
-                        adjacency_list[node_index[from_node]].append(node_index[to_node])
-                    else:
-                        # Nếu không phải 1 chiều, thêm vào danh sách liên kết
-                        adjacency_list[node_index[from_node]].append(node_index[to_node])
-                        adjacency_list[node_index[to_node]].append(node_index[from_node])
+            previous_node = None
+    
+            for node_id in way["nodes"]:
+                if node_id in intersection_nodes:
+                    if previous_node is not None:
+                        # Tạo liên kết giữa node trước và node hiện tại nếu là giao điểm
+                        from_index = node_index[previous_node]
+                        to_index = node_index[node_id]
+                        if is_oneway:
+                            list1Ways.append([from_index, to_index])
+                            adjacency_list[from_index].append(to_index)
+                        else:
+                            adjacency_list[from_index].append(to_index)
+                            adjacency_list[to_index].append(from_index)
+                    previous_node = node_id
 
     # Xây dựng listLinks
     listLinks = []
