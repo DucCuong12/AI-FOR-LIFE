@@ -15,13 +15,13 @@ function handleMapClick(map) {
 
         if (clickCNT === 0) {           // source node
             (listClickedNodes[0]) ? map.removeLayer(listClickedNodes[0]) : null;
-		    listClickedNodes[0] = marker_pin(e.latlng, 'S').addTo(map);
+		    listClickedNodes[0] = marker_pin(e.latlng, 'S', true, false).addTo(map);
 
             showPath(null, false)
         } 
         else if (clickCNT === 1) {    // destination node
             (listClickedNodes[1]) ? map.removeLayer(listClickedNodes[1]) : null;
-		    listClickedNodes[1] = marker_pin(e.latlng, ' D').addTo(map);
+		    listClickedNodes[1] = marker_pin(e.latlng, 'D', false, true).addTo(map);
         }
 
         clickCNT = (clickCNT >= clickMAX - 1) ? 0 : clickCNT + 1;

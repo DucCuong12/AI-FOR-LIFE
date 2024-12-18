@@ -22,6 +22,49 @@ const ICON_BI = L.icon(
         popupAnchor: [0, 0]
     }
 );
+const ICON_PIN_SOURCE = L.icon(
+    options = {
+        iconUrl: './src/img/source-pin.svg',
+        className: 'icon-pin source-pin',
+        iconSize: [30, 26],
+        iconAnchor: [9, 26],
+        popupAnchor: [0, 0],
+        fillColor: "white",
+
+    }
+);
+
+const ICON_BI_SOURCE = L.icon(
+    options = {
+        iconUrl: './src/img/source-bi.svg',
+        className: 'icon-bi source-bi',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+        popupAnchor: [0, 0],
+        fillColor: "white",
+        
+    }
+);
+const ICON_PIN_DES = L.icon(
+    options = {
+        iconUrl: './src/img/des-pin.svg',
+        className: 'icon-pin des-pin',
+        iconSize: [30, 26],
+        iconAnchor: [9, 26],
+        popupAnchor: [0, 0]
+    }
+);
+
+const ICON_BI_DES = L.icon(
+    options = {
+        iconUrl: './src/img/des-bi.svg',
+        className: 'icon-bi des-bi',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+        popupAnchor: [0, 0],
+        
+    }
+);
 
 // build
 function map_build(id) {
@@ -48,11 +91,11 @@ function map_build(id) {
 
 
 // marker
-function marker_pin(latlng, title='') {
+function marker_pin(latlng, title='', isSource=false, isDes=false) {
     marker = L.marker(
         latlng = latlng,
         options = {
-            icon: ICON_PIN,
+            icon: isSource ? ICON_PIN_SOURCE : (isDes ? ICON_PIN_DES : ICON_PIN),
         }
     )
 
@@ -68,11 +111,11 @@ function marker_pin(latlng, title='') {
     return marker
 }
 
-function marker_bi(latlng) {
+function marker_bi(latlng, isSource=false, isDes=false) {
     marker = L.marker(
         latlng = latlng,
         options = {
-            icon: ICON_BI,
+            icon: isSource ? ICON_BI_SOURCE : (isDes ? ICON_BI_DES : ICON_BI),
         }
     )
 
