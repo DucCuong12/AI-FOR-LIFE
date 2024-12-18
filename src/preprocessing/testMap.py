@@ -89,9 +89,19 @@ if response.status_code == 200:
     listBoundaries = [{"lat": nodes[node_id]["lat"], "lng": nodes[node_id]["lng"]}
                       for node_id in boundaries if node_id in nodes]
 
-    # 3. Xây dựng listNodes và map ID -> index
-    listNodes = [{"lat": v["lat"], "lng": v["lng"]} for k, v in nodes.items()]
-    node_index = {node_id: i for i, node_id in enumerate(nodes.keys())}
+    # 3. Xây dựng listNodes và map ID -> index (chỉ lấy node giao cắt)
+    node_ways_map = defaultdict(set)
+    for way in ways:
+        if "nodes" in way:
+            for node_id in way["nodes"]:
+                node_ways_map[node_id].add(way["id"])
+
+    # Chỉ lấy các node giao cắt (node xuất hiện trong nhiều way)
+    intersection_nodes = {node_id: {"lat": nodes[node_id]["lat"], "lng": nodes[node_id]["lng"]}
+                          for node_id, ways in node_ways_map.items() if len(ways) > 1}
+
+    listNodes = list(intersection_nodes.values())
+    node_index = {node_id: i for i, node_id in enumerate(intersection_nodes.keys())}
 
     # 4. Xây dựng list1Ways và listLinks
     list1Ways = []
@@ -139,28 +149,3 @@ if response.status_code == 200:
     print(f"Dữ liệu đã được lưu vào: {file_path}")
 else:
     print("Lỗi khi gửi yêu cầu:", response.status_code)
-
-
-def save_result_to_file(result, file_path):
-    # Tùy chỉnh định dạng cho `list1Ways` và `listLinks` trước khi ghi
-    list1Ways_formatted = [f"[{', '.join(map(str, way))}]" for way in result["list1Ways"]]
-    listLinks_formatted = [f"[{', '.join(map(str, link))}]" for link in result["listLinks"]]
-    
-    # Ghi ra file với định dạng tùy chỉnh
-    with open(file_path, "w", encoding="utf-8") as f:
-        # Ghi các phần khác của JSON trước
-        f.write('{\n')
-        f.write(f'    "center": {json.dumps(result["center"], ensure_ascii=False)},\n')
-        f.write(f'    "listBoundaries": [\n')
-        f.write(',\n'.join([f'        {json.dumps(boundary, ensure_ascii=False)}' for boundary in result["listBoundaries"]]))
-        f.write('\n    ],\n')
-        f.write(f'    "listNodes": [\n')
-        f.write(',\n'.join([f'        {json.dumps(node, ensure_ascii=False)}' for node in result["listNodes"]]))
-        f.write('\n    ],\n')
-        f.write(f'    "list1Ways": [\n        ')
-        f.write(',\n        '.join(list1Ways_formatted))
-        f.write('\n    ],\n')
-        f.write(f'    "listLinks": [\n        ')
-        f.write(',\n        '.join(listLinks_formatted))
-        f.write('\n    ]\n')
-        f.write('}\n')
