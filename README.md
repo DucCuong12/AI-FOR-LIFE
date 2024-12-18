@@ -1,4 +1,4 @@
-# Intro-to-Ai
+# Ai for life
 
 - Main:  index.html
 - Insert Algo.:  index.js
