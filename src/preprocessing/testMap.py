@@ -118,6 +118,7 @@ if response.status_code == 200:
                     if is_oneway:
                         # Thêm vào danh sách đường 1 chiều
                         list1Ways.append([node_index[from_node], node_index[to_node]])
+                        adjacency_list[node_index[from_node]].append(node_index[to_node])
                     else:
                         # Nếu không phải 1 chiều, thêm vào danh sách liên kết
                         adjacency_list[node_index[from_node]].append(node_index[to_node])
