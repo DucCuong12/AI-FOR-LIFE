@@ -65,6 +65,67 @@ function completeSearch(D, SOURCE, MANDATORY, DESTINATION) {
     return { minDistance, bestScene };
 }
 
+    function Greedy(D, SOURCE, MANDATORY, DESTINATION) {
+        /* ---------init DummyTSP--------- */
+        scene = [SOURCE, ...MANDATORY, DESTINATION]
+        const N = scene.length + 1,
+              adj = new Array(N).fill(INF).map(() => new Array(N).fill(INF));
+    
+        for(let i = 0; i < N - 1; i++)
+            for(let j = 0; j < N - 1; j++)
+                if(i === j) adj[i][i] = 0
+                else adj[i][j] = D[scene[i]][scene[j]]  * 1000
+    
+        // Dummy Node
+        adj[N-2][N-1] = 0.1 * 1000;
+        adj[N-1][0] = 0.1 * 1000;
+    
+        /* ---------TSP implement--------- */
+        const visited = new Array(N).fill(0),
+              x = new Array(N).fill(0);
+    
+            best_cost = Number.MAX_SAFE_INTEGER;
+        let minDist = 0;
+        x[0] = 0;
+        let current_node = 0;
+        let k = 1;
+        visited[0] = 1;
+        while (k < N) {
+            let best_cost1 = Number.MAX_SAFE_INTEGER;
+            let next_node = -1;
+    
+            for (let i = 0; i < N; i++) {
+                if (!visited[i] && adj[current_node][i] < best_cost1) {
+                    best_cost1 = adj[current_node][i];
+                    next_node = i;
+                }
+            }
+    
+            if (next_node === -1) break;
+    
+            minDist += adj[current_node][next_node];
+            x[k] = next_node;
+            visited[next_node] = 1;
+            current_node = next_node;
+            k++;
+        }
+    
+        bestScene = [...x];
+        let minDistance = 0;
+        bestScene.pop()
+        
+        for(let i = 0; i < bestScene.length; i++) {
+            bestScene[i] = scene[bestScene[i]]
+            if(i > 0) minDistance += D[bestScene[i-1]][bestScene[i]]
+        }
+    
+        return { minDistance, bestScene };
+    }
+    
+
+
+
+
 function BnB(D, SOURCE, MANDATORY, DESTINATION) {
     /* ---------init DummyTSP--------- */
     scene = [SOURCE, ...MANDATORY, DESTINATION]

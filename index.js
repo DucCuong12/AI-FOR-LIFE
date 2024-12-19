@@ -18,6 +18,10 @@ document.getElementById('run').addEventListener("click", () => {
         (parseInt(findPath) === 0) ? Floyd_Warshall(parseInt(dummyTSP)) :
         (parseInt(findPath) === 1) ? Dijkstra(parseInt(dummyTSP)) : 
         (parseInt(findPath) === 2) ? A_Star(parseInt(dummyTSP)) :
+        (parseInt(findPath) === 3) ? BFS(parseInt(dummyTSP)) :
+        (parseInt(findPath) === 4) ? DFS(parseInt(dummyTSP)) :
+        (parseInt(findPath) === 5) ? IDDFS(parseInt(dummyTSP)) :
+
                                     { distance: null, path: null } ;
     const end = window.performance.now();
 
