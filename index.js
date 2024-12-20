@@ -20,7 +20,9 @@ document.getElementById('run').addEventListener("click", () => {
         (parseInt(findPath) === 2) ? A_Star(parseInt(dummyTSP)) :
         (parseInt(findPath) === 3) ? BFS(parseInt(dummyTSP)) :
         (parseInt(findPath) === 4) ? DFS(parseInt(dummyTSP)) :
-        (parseInt(findPath) === 5) ? IDDFS(parseInt(dummyTSP)) :
+        (parseInt(findPath) === 5) ? BellmanFord(parseInt(dummyTSP)) :
+        (parseInt(findPath) === 6) ? Greedy1(parseInt(dummyTSP)):
+        (parseInt(findPath) === 7) ? UniformCostSearch(parseInt(dummyTSP)):
 
                                     { distance: null, path: null } ;
     const end = window.performance.now();

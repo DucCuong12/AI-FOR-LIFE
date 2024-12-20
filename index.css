@@ -1,3 +1,23 @@
+#map {
+    height: 700px;
+    border-radius: 10px;
+}
+.boxselect {
+    border-radius: 5px;
+    border: 1px solid #9a9aa7;
+    background-color: #e9e9ed;
+}
+select {
+    margin-left: 10px;
+}
+
+.source-pin {
+    fill : antiquewhite;
+}
+
+.des-pin {
+    color: aquamarine;
+}
 #topnav {
     display: flex;
     justify-content: space-between;
@@ -23,16 +43,4 @@
     height: 30px;
     margin: 0 10px;
     padding: 0 5px;
-}
-#map {
-    height: 490px;
-    border-radius: 10px;
-}
-.boxselect {
-    border-radius: 5px;
-    border: 1px solid #9a9aa7;
-    background-color: #e9e9ed;
-}
-select {
-    margin-left: 10px;
 }

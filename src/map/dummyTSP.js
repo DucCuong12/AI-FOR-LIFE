@@ -69,13 +69,13 @@ function completeSearch(D, SOURCE, MANDATORY, DESTINATION) {
         /* ---------init DummyTSP--------- */
         scene = [SOURCE, ...MANDATORY, DESTINATION]
         const N = scene.length + 1,
-              adj = new Array(N).fill(INF).map(() => new Array(N).fill(INF));
-    
+            adj = new Array(N).fill(INF).map(() => new Array(N).fill(INF));
+
         for(let i = 0; i < N - 1; i++)
             for(let j = 0; j < N - 1; j++)
                 if(i === j) adj[i][i] = 0
                 else adj[i][j] = D[scene[i]][scene[j]]  * 1000
-    
+
         // Dummy Node
         adj[N-2][N-1] = 0.1 * 1000;
         adj[N-1][0] = 0.1 * 1000;
@@ -90,11 +90,11 @@ function completeSearch(D, SOURCE, MANDATORY, DESTINATION) {
         let current_node = 0;
         let k = 1;
         visited[0] = 1;
-        while (k < N) {
+        while (k < N-1) {
             let best_cost1 = Number.MAX_SAFE_INTEGER;
             let next_node = -1;
     
-            for (let i = 0; i < N; i++) {
+            for (let i = 1; i < N; i++) {
                 if (!visited[i] && adj[current_node][i] < best_cost1) {
                     best_cost1 = adj[current_node][i];
                     next_node = i;
