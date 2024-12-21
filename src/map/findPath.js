@@ -995,3 +995,249 @@ function UniformCostSearch(dummyTSP) {
         };
     }
     
+    function Johnson(dummyTSP) {
+        /* ---------init--------- */
+        const N = GRAPH.listNodes.length,
+            SOURCE = GRAPH.source,
+            DESTINATION = GRAPH.destination;
+    
+        let MANDATORY = JSON.parse(JSON.stringify(GRAPH.mandatory));
+        let W = new Array(N).fill(INF).map(() => new Array(N).fill(INF)),
+            trace = new Array(N).fill(0).map(() => new Array(N).fill(0));
+    
+        // W, D
+        for (let u = 0; u < N; u++) {
+            W[u][u] = 0;
+    
+            links = GRAPH.listLinks[u];
+            for (let k = 0; k < links.length; k++) {
+                let v = links[k];
+                W[u][v] = haversine(
+                    GRAPH.listNodes[u].lat,
+                    GRAPH.listNodes[u].lng,
+                    GRAPH.listNodes[v].lat,
+                    GRAPH.listNodes[v].lng
+                );
+            }
+        }
+        let D = new Array(N).fill(INF).map(() => new Array(N).fill(INF));
+    
+        // trace
+        for (let u = 0; u < N; u++)
+            for (let v = 0; v < N; v++)
+                trace[u][v] = u;
+    
+        /* -------implement Johnson's algorithm------- */
+        // Step 1: Add a new vertex q
+        const q = N;
+        for (let v = 0; v < N; v++) {
+            W[q] = W[q] || [];
+            W[q][v] = 0;
+        }
+    
+        // Step 2: Run Bellman-Ford from q
+        let h = new Array(N + 1).fill(0);
+        for (let i = 0; i < N; i++) {
+            for (let u = 0; u <= N; u++) {
+                for (let v = 0; v < N; v++) {
+                    if (W[u][v] !== INF && h[v] > h[u] + W[u][v]) {
+                        h[v] = h[u] + W[u][v];
+                    }
+                }
+            }
+        }
+    
+        // Check for negative cycles
+        for (let u = 0; u <= N; u++) {
+            for (let v = 0; v < N; v++) {
+                if (W[u][v] !== INF && h[v] > h[u] + W[u][v]) {
+                    console.error("Graph contains a negative-weight cycle");
+                    return null;
+                }
+            }
+        }
+    
+        // Step 3: Reweight the edges
+        for (let u = 0; u < N; u++) {
+            for (let v = 0; v < N; v++) {
+                if (W[u][v] !== INF) {
+                    W[u][v] = W[u][v] + h[u] - h[v];
+                }
+            }
+        }
+    
+        // Step 4: Run Dijkstra's algorithm for each vertex
+        function dijkstra(start) {
+            let dist = new Array(N).fill(INF);
+            let visited = new Array(N).fill(false);
+            dist[start] = 0;
+    
+            for (let i = 0; i < N; i++) {
+                let u = -1;
+                for (let j = 0; j < N; j++) {
+                    if (!visited[j] && (u === -1 || dist[j] < dist[u])) {
+                        u = j;
+                    }
+                }
+    
+                if (dist[u] === INF) break;
+    
+                visited[u] = true;
+    
+                for (let v = 0; v < N; v++) {
+                    if (W[u][v] !== INF && dist[v] > dist[u] + W[u][v]) {
+                        dist[v] = dist[u] + W[u][v];
+                        trace[start][v] = u;
+                    }
+                }
+            }
+    
+            return dist;
+        }
+    
+        for (let u = 0; u < N; u++) {
+            let dist = dijkstra(u);
+            for (let v = 0; v < N; v++) {
+                D[u][v] = dist[v] - h[u] + h[v];
+            }
+        }
+    
+        /* ------dummyTSP------ */
+        const { minDistance, bestScene } = (dummyTSP === 0) ? completeSearch(D, SOURCE, [...MANDATORY], DESTINATION) :
+                                            (dummyTSP === 1) ? BnB(D, SOURCE, [...MANDATORY], DESTINATION) : 
+                                            (dummyTSP === 2) ? GA(D, SOURCE, [...MANDATORY], DESTINATION) :
+                                            (dummyTSP === 3) ? Greedy(D, SOURCE, [...MANDATORY], DESTINATION) :
+                                            { distance: null, path: null };
+    
+        // trace
+        path = [];
+        for (let k = bestScene.length - 1; k > 0; k--) {
+            let u = bestScene[k - 1];
+            let v = bestScene[k];
+    
+            path.push(v);
+            while (v != u) { // trace back from v to u
+                v = trace[u][v];
+                if (v != u) path.push(v);
+            }
+        }
+        path.push(bestScene[0]);
+        path = path.reverse();
+        return { distance: minDistance, path: path };
+    }
+    
+    // function IDDFS(dummyTSP) {
+    //     /* ---------init--------- */
+    //     const N = GRAPH.listNodes.length,
+    //         SOURCE = GRAPH.source,
+    //         DESTINATION = GRAPH.destination;
+    
+    //     let MANDATORY = JSON.parse(JSON.stringify(GRAPH.mandatory));
+    //     let W = new Array(N).fill(INF).map(() => new Array(N).fill(INF)),
+    //         trace = new Array(N).fill(0).map(() => new Array(N).fill(0));
+    
+    //     // W, D
+    //     for (let u = 0; u < N; u++) {
+    //         W[u][u] = 0;
+    
+    //         links = GRAPH.listLinks[u];
+    //         for (let k = 0; k < links.length; k++) {
+    //             let v = links[k];
+    //             W[u][v] = haversine(
+    //                 GRAPH.listNodes[u].lat,
+    //                 GRAPH.listNodes[u].lng,
+    //                 GRAPH.listNodes[v].lat,
+    //                 GRAPH.listNodes[v].lng
+    //             );
+    //         }
+    //     }
+    //     let D = new Array(N).fill(INF).map(() => new Array(N).fill(INF));
+    
+    //     // trace
+    //     for (let u = 0; u < N; u++)
+    //         for (let v = 0; v < N; v++)
+    //             trace[u][v] = u;
+    
+    //     /* -------implement IDDFS------- */
+    //     function dfs(node, target, depth, visited, path) {
+    //         if (depth < 0) return false;
+    //         if (node === target) {
+    //             path.push(node);
+    //             return true;
+    //         }
+            
+    //         visited[node] = true;
+    //         let links = GRAPH.listLinks[node];
+            
+    //         for (let i = 0; i < links.length; i++) {
+    //             let nextNode = links[i];
+    //             if (!visited[nextNode]) {
+    //                 if (dfs(nextNode, target, depth - 1, visited, path)) {
+    //                     path.push(node);
+    //                     return true;
+    //                 }
+    //             }
+    //         }
+            
+    //         visited[node] = false;
+    //         return false;
+    //     }
+    
+    //     function iddfs(start, target, maxDepth) {
+    //         for (let depth = 0; depth <= maxDepth; depth++) {
+    //             let visited = new Array(N).fill(false);
+    //             let path = [];
+    //             if (dfs(start, target, depth, visited, path)) {
+    //                 return path.reverse();
+    //             }
+    //         }
+    //         return null;
+    //     }
+    
+    //     function updateDistanceAndTrace(path) {
+    //         for (let i = 0; i < path.length - 1; i++) {
+    //             let u = path[i];
+    //             let v = path[i + 1];
+    //             D[u][v] = W[u][v];
+    //             trace[u][v] = u;
+    //         }
+    //     }
+    
+    //     // IDDFS algorithm
+    //     let scene = [SOURCE, ...MANDATORY, DESTINATION];
+    //     const maxDepth = N - 1; // Maximum possible depth is N-1
+    
+    //     for (let i = 0; i < scene.length; i++) {
+    //         for (let j = i + 1; j < scene.length; j++) {
+    //             let path = iddfs(scene[i], scene[j], maxDepth);
+    //             if (path) {
+    //                 updateDistanceAndTrace(path);
+    //             }
+    //         }
+    //     }
+    
+    //     /* ------dummyTSP------ */
+    //     const { minDistance, bestScene } = (dummyTSP === 0) ? completeSearch(D, SOURCE, [...MANDATORY], DESTINATION) :
+    //                                         (dummyTSP === 1) ? BnB(D, SOURCE, [...MANDATORY], DESTINATION) : 
+    //                                         (dummyTSP === 2) ? GA(D, SOURCE, [...MANDATORY], DESTINATION) :
+    //                                         { distance: null, path: null };
+    
+    //     // trace
+    //     path = [];
+    //     for (let k = bestScene.length - 1; k > 0; k--) {
+    //         let u = bestScene[k - 1];
+    //         let v = bestScene[k];
+    
+    //         path.push(v);
+    //         while (v != u) { // trace back from v to u
+    //             v = trace[u][v];
+    //             if (v != u) path.push(v);
+    //         }
+    //     }
+    //     path.push(bestScene[0]);
+    //     path = path.reverse();
+    //     return { distance: minDistance, path: path };
+    // }
+    
+    
+    

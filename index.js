@@ -23,6 +23,8 @@ document.getElementById('run').addEventListener("click", () => {
         (parseInt(findPath) === 5) ? BellmanFord(parseInt(dummyTSP)) :
         (parseInt(findPath) === 6) ? Greedy1(parseInt(dummyTSP)):
         (parseInt(findPath) === 7) ? UniformCostSearch(parseInt(dummyTSP)):
+        (parseInt(findPath) === 8) ? Johnson(parseInt(dummyTSP)):
+        // (parseInt(findPath) === 9) ? IDDFS(parseInt(dummyTSP)):
 
                                     { distance: null, path: null } ;
     const end = window.performance.now();
